@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Acceso IAmax</title>
+    <link href="https://cdn.jsdelivr.net/npm/@fontsource/inter@4.5.0/latin.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue: #1a56db;
+            --blue-light: #3b82f6;
+            --blue-dark: #1e3a8a;
+            --orange: #f97316;
+            --orange-light: #fb923c;
+            --orange-dark: #ea580c;
+            --purple: #7c3aed;
+            --purple-light: #a78bfa;
+            --purple-dark: #5b21b6;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
+
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: floatOrb 8s ease-in-out infinite;
+        }
+
+        .bg-orb:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: var(--blue);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .bg-orb:nth-child(2) {
+            width: 350px;
+            height: 350px;
+            background: var(--orange);
+            bottom: -80px;
+            right: -80px;
+            animation-delay: -3s;
+        }
+
+        .bg-orb:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            background: var(--purple);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -5s;
+        }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.1); }
+            50% { transform: translate(-20px, 20px) scale(0.9); }
+            75% { transform: translate(20px, 10px) scale(1.05); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, var(--blue), var(--purple), var(--orange));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(124, 58, 237, 0.5); }
+        }
+
+        .logo-icon svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--blue-light), var(--purple-light), var(--orange-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header h1 span {
+            font-weight: 800;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(148, 163, 184, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .card-icon.blue { background: linear-gradient(135deg, var(--blue), var(--blue-dark)); }
+        .card-icon.purple { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); }
+        .card-icon.orange { background: linear-gradient(135deg, var(--orange), var(--orange-dark)); }
+
+        .card-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .credential-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.08);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .credential-row:last-child { margin-bottom: 0; }
+
+        .credential-row:hover {
+            border-color: rgba(148, 163, 184, 0.15);
+        }
+
+        .credential-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .credential-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .credential-value {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.02em;
+        }
+
+        .copy-btn {
+            background: rgba(148, 163, 184, 0.1);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 10px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+
+        .copy-btn:hover {
+            background: rgba(148, 163, 184, 0.2);
+            border-color: rgba(148, 163, 184, 0.3);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.92);
+        }
+
+        .copy-btn.copied {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .copy-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn.copied svg { fill: #22c55e; }
+
+        .totp-section { text-align: center; }
+
+        .totp-code-display {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 24px 0;
+        }
+
+        .totp-digit {
+            width: 48px;
+            height: 64px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid rgba(148, 163, 184, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .totp-digit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(249, 115, 22, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .totp-digit:hover::before { opacity: 1; }
+
+        .totp-divider {
+            width: 8px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .timer-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .timer-ring {
+            width: 48px;
+            height: 48px;
+            position: relative;
+        }
+
+        .timer-ring svg {
+            transform: rotate(-90deg);
+            width: 48px;
+            height: 48px;
+        }
+
+        .timer-ring-bg {
+            fill: none;
+            stroke: rgba(148, 163, 184, 0.1);
+            stroke-width: 4;
+        }
+
+        .timer-ring-progress {
+            fill: none;
+            stroke: url(#timerGrad);
+            stroke-width: 4;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .timer-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .timer-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .timer-bar {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--blue), var(--purple), var(--orange));
+            transition: width 1s linear;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            border: none;
+            border-radius: 12px;
+            padding: 14px 32px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-primary svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+            flex-shrink: 0;
+        }
+
+        .btn-nanobanana {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc04, #ea4335);
+            background-size: 300% 100%;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 32px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: geminiShift 4s ease-in-out infinite;
+        }
+
+        @keyframes geminiShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .btn-nanobanana:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(66, 133, 244, 0.4);
+        }
+
+        .btn-nanobanana:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-nanobanana svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+            flex-shrink: 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 20px;
+            padding: 6px 14px;
+            margin-top: 12px;
+            font-size: 0.75rem;
+            color: #22c55e;
+        }
+
+        .security-badge svg {
+            width: 14px;
+            height: 14px;
+            fill: #22c55e;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 14px;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #22c55e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .toast-icon svg {
+            width: 14px;
+            height: 14px;
+            fill: white;
+        }
+
+        .toast-text {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .hidden-input {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            opacity: 0;
+        }
+
+        @media (max-width: 480px) {
+            .container { max-width: 100%; }
+            .card { padding: 20px; }
+
+            .totp-digit {
+                width: 40px;
+                height: 56px;
+                font-size: 1.5rem;
+                border-radius: 10px;
+            }
+
+            .totp-divider { height: 56px; }
+
+            .header h1 { font-size: 1.4rem; }
+            .credential-value { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="bg-orb"></div>
+        <div class="bg-orb"></div>
+        <div class="bg-orb"></div>
+    </div>
+
+    <input type="text" class="hidden-input" id="hiddenCopyField" readonly>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+            </div>
+            <h1>Portal de Acceso <span>IAmax</span></h1>
+            <p>Tus credenciales de acceso seguro</p>
+        </div>
+
+        <!-- Email Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon blue">
+                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                </div>
+                <span class="card-title">Correo Electrónico</span>
+            </div>
+            <div class="credential-row">
+                <div class="credential-info">
+                    <div class="credential-label">Email</div>
+                    <div class="credential-value">g28034321@gmail.com</div>
+                </div>
+                <button class="copy-btn" id="btnCopyEmail" onclick="handleCopy('g28034321@gmail.com', 'btnCopyEmail')" title="Copiar email">
+                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Password Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon purple">
+                    <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/></svg>
+                </div>
+                <span class="card-title">Contraseña</span>
+            </div>
+            <div class="credential-row">
+                <div class="credential-info">
+                    <div class="credential-label">Contraseña</div>
+                    <div class="credential-value" id="passValue">••••••••••</div>
+                </div>
+                <button class="copy-btn" onclick="togglePassVisibility()" title="Mostrar/Ocultar" id="btnTogglePass">
+                    <svg viewBox="0 0 24 24" id="eyeIcon"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                </button>
+                <button class="copy-btn" id="btnCopyPass" onclick="handleCopy('Mailo5657', 'btnCopyPass')" title="Copiar contraseña">
+                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- TOTP Card -->
+        <div class="card totp-section">
+            <div class="card-header" style="justify-content: center;">
+                <div class="card-icon orange">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                </div>
+                <span class="card-title">Código de Verificación</span>
+            </div>
+
+            <div class="security-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                Autenticación de dos factores (2FA)
+            </div>
+
+            <div class="totp-code-display" id="totpDisplay">
+                <div class="totp-digit" id="dg1">-</div>
+                <div class="totp-digit" id="dg2">-</div>
+                <div class="totp-digit" id="dg3">-</div>
+                <div class="totp-divider">:</div>
+                <div class="totp-digit" id="dg4">-</div>
+                <div class="totp-digit" id="dg5">-</div>
+                <div class="totp-digit" id="dg6">-</div>
+            </div>
+
+            <div class="timer-section">
+                <div class="timer-ring">
+                    <svg viewBox="0 0 48 48">
+                        <defs>
+                            <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color: var(--blue-light)"/>
+                                <stop offset="50%" style="stop-color: var(--purple-light)"/>
+                                <stop offset="100%" style="stop-color: var(--orange-light)"/>
+                            </linearGradient>
+                        </defs>
+                        <circle class="timer-ring-bg" cx="24" cy="24" r="20"/>
+                        <circle class="timer-ring-progress" id="timerProgress" cx="24" cy="24" r="20"
+                            stroke-dasharray="125.66" stroke-dashoffset="0"/>
+                    </svg>
+                    <span class="timer-text" id="timerSec">30</span>
+                </div>
+                <span class="timer-label">segundos restantes</span>
+            </div>
+
+            <div class="timer-bar-container">
+                <div class="timer-bar" id="timerBar" style="width: 100%"></div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-primary" onclick="copyTotp()">
+                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                    Copiar Código de Verificación
+                </button>
+                <button class="btn-nanobanana" onclick="openNanoBanana()">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    Abrir NanoBananaPro
+                </button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🔒 Mantén tus credenciales seguras y no las compartas con terceros.</p>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+        </div>
+        <span class="toast-text" id="toastMsg">Copiado al portapapeles</span>
+    </div>
+
+    <script>
+        var totpSecret = 'dvzsf7uvokqhxhfdiju5w6bfohzgeo2z';
+        var totpDigits = 6;
+        var totpPeriod = 30;
+        var passVisible = false;
+        var currentCode = '';
+        var toastTimeout = null;
+
+        function base32Decode(enc) {
+            var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+            var cleaned = enc.toUpperCase().replace(/=+$/, '').replace(/[^A-Z2-7]/g, '');
+            var binStr = '';
+            for (var i = 0; i < cleaned.length; i++) {
+                var idx = alphabet.indexOf(cleaned.charAt(i));
+                if (idx !== -1) {
+                    var bin = idx.toString(2);
+                    while (bin.length < 5) bin = '0' + bin;
+                    binStr += bin;
+                }
+            }
+            var out = [];
+            for (var j = 0; j + 8 <= binStr.length; j += 8) {
+                out.push(parseInt(binStr.substring(j, j + 8), 2));
+            }
+            return new Uint8Array(out);
+        }
+
+        async function hmacSha1(key, msg) {
+            var cryptoKey = await crypto.subtle.importKey(
+                'raw', key, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']
+            );
+            var sig = await crypto.subtle.sign('HMAC', cryptoKey, msg);
+            return new Uint8Array(sig);
+        }
+
+        async function generateTOTP() {
+            var secret = base32Decode(totpSecret);
+            var timeCounter = Math.floor(Date.now() / 1000 / totpPeriod);
+
+            var timeBuf = new ArrayBuffer(8);
+            var view = new DataView(timeBuf);
+            view.setUint32(4, timeCounter, false);
+
+            var hmac = await hmacSha1(secret, new Uint8Array(timeBuf));
+
+            var offset = hmac[hmac.length - 1] & 0x0f;
+            var binary = ((hmac[offset] & 0x7f) << 24) |
+                         ((hmac[offset + 1] & 0xff) << 16) |
+                         ((hmac[offset + 2] & 0xff) << 8) |
+                         (hmac[offset + 3] & 0xff);
+
+            var otp = binary % Math.pow(10, totpDigits);
+            currentCode = otp.toString().padStart(totpDigits, '0');
+            renderCode(currentCode);
+        }
+
+        function renderCode(code) {
+            for (var k = 0; k < 6; k++) {
+                var el = document.getElementById('dg' + (k + 1));
+                el.textContent = code.charAt(k);
+            }
+        }
+
+        function updateTimer() {
+            var now = Math.floor(Date.now() / 1000);
+            var elapsed = now % totpPeriod;
+            var remaining = totpPeriod - elapsed;
+
+            document.getElementById('timerSec').textContent = remaining;
+
+            var circumference = 125.66;
+            var progress = elapsed / totpPeriod;
+            var offset = circumference * progress;
+
+            document.getElementById('timerProgress').style.strokeDashoffset = offset;
+            document.getElementById('timerBar').style.width = ((1 - progress) * 100) + '%';
+
+            if (remaining <= 5) {
+                document.getElementById('timerSec').style.color = '#ef4444';
+                document.getElementById('timerBar').style.background = '#ef4444';
+            } else {
+                document.getElementById('timerSec').style.color = '';
+                document.getElementById('timerBar').style.background = '';
+            }
+
+            if (remaining === totpPeriod) {
+                generateTOTP();
+            }
+        }
+
+        function handleCopy(text, btnId) {
+            var hiddenField = document.getElementById('hiddenCopyField');
+            hiddenField.value = text;
+            hiddenField.focus();
+            hiddenField.select();
+            hiddenField.setSelectionRange(0, 99999);
+
+            try {
+                document.execCommand('copy');
+            } catch (e) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text);
+                }
+            }
+
+            var btn = document.getElementById(btnId);
+            btn.classList.add('copied');
+            showToast('¡Copiado al portapapeles!');
+
+            setTimeout(function () {
+                btn.classList.remove('copied');
+            }, 2000);
+        }
+
+        function togglePassVisibility() {
+            passVisible = !passVisible;
+            var passEl = document.getElementById('passValue');
+            var eyeBtn = document.getElementById('btnTogglePass');
+
+            if (passVisible) {
+                passEl.textContent = 'Mailo5657';
+                eyeBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
+            } else {
+                passEl.textContent = '••••••••••';
+                eyeBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
+            }
+        }
+
+        function copyTotp() {
+            if (!currentCode) return;
+
+            var hiddenField = document.getElementById('hiddenCopyField');
+            hiddenField.value = currentCode;
+            hiddenField.focus();
+            hiddenField.select();
+            hiddenField.setSelectionRange(0, 99999);
+
+            try {
+                document.execCommand('copy');
+            } catch (e) {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(currentCode);
+                }
+            }
+
+            showToast('¡Código ' + currentCode + ' copiado!');
+        }
+
+        function openNanoBanana() {
+            window.open('https://labs.google/fx/es/tools/flow', '_blank');
+        }
+
+        function showToast(msg) {
+            var toast = document.getElementById('toast');
+            var toastText = document.getElementById('toastMsg');
+            toastText.textContent = msg;
+
+            if (toastTimeout) {
+                clearTimeout(toastTimeout);
+                toast.classList.remove('show');
+            }
+
+            requestAnimationFrame(function () {
+                toast.classList.add('show');
+            });
+
+            toastTimeout = setTimeout(function () {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // Initialize
+        generateTOTP();
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    </script>
+</body>
+</html>
